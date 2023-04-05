@@ -4,8 +4,8 @@ public static class Config
 {
     public static double Sigma = 1.0;
 
-    public static double From = 2.0;
-    public static double To = 4.0;
+    public static double From = 0.0;
+    public static double To = 10.0;
 
-    public static int SplitsNumber = 2;
+    public static int SplitsNumber = 4;
 }

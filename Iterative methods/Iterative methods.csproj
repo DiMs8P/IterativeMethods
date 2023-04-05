@@ -10,7 +10,6 @@
 
     <ItemGroup>
       <Folder Include="Core\Calculus" />
-      <Folder Include="DataTypes\Matrix" />
     </ItemGroup>
 
 </Project>

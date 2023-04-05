@@ -1,6 +1,7 @@
 ﻿using System;
 using Application.Core;
 using Application.Core.DataTypes;
+using Application.Core.DataTypes.Matrix;
 using Application.Utils;
 
 namespace Application
@@ -27,6 +28,8 @@ namespace Application
             PointContainer.GetInstance().Initialize(pointParser);
 
             Grid grid = new Grid(elementParser);
+
+            SparseMatrix globalMatrix = new SparseMatrix(grid);
         }
     }
 }

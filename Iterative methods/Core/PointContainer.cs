@@ -6,6 +6,7 @@ class PointContainer
 {
     private static PointContainer instance;
     private Point[] _points;
+    public int Size => _points.Length;
     private PointContainer()
     {}
     
