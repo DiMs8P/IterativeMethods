@@ -11,6 +11,23 @@ public abstract class Triangle
     protected double[] _values = Array.Empty<double>();
 
     protected Triangle(Grid grid) => Initialize(grid);
+    
+    public IEnumerable<IndexValue> ColumnIndexValuesByRow(int rowIndex)
+    {
+        if (_rowPtr.Length == 0)
+            yield break;
+
+        if (rowIndex < 0) throw new ArgumentOutOfRangeException(nameof(rowIndex));
+
+        var end = _rowPtr[rowIndex];
+
+        var begin = rowIndex == 0
+            ? 0
+            : _rowPtr[rowIndex - 1];
+
+        for (int i = begin; i < end; i++)
+            yield return new IndexValue(_columnPtr[i], Values[i]);
+    }
 
     protected abstract void Initialize(Grid grid);
 

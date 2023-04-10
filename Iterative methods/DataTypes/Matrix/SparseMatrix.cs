@@ -17,5 +17,9 @@ public class SparseMatrix
         _upperTriangle = bIsSymmetrical ? null : new UpperTriangle(grid);
     }
     
+    public IEnumerable<IndexValue> ColumnIndexValuesByRow(int rowIndex)
+    {
+        
+    }
     
 }
