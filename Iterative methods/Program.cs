@@ -3,6 +3,7 @@ using Application.Core;
 using Application.Core.DataTypes;
 using Application.Core.DataTypes.Matrix;
 using Application.Utils;
+using Iterative_methods.DataTypes.Matrix;
 
 namespace Application
 {
@@ -29,7 +30,7 @@ namespace Application
 
             Grid grid = new Grid(elementParser);
 
-            SparseMatrix globalMatrix = new SparseMatrix(grid);
+            SparseMatrixSymmetrical globalMatrixSymmetrical = new SparseMatrixSymmetrical(grid);
         }
     }
 }

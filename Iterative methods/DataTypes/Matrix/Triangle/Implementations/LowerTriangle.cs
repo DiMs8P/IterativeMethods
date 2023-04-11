@@ -4,7 +4,7 @@ using Application.Core.DataTypes.Matrix;
 
 namespace Iterative_methods.DataTypes.Matrix.Implementations;
 
-public class LowerTriangle : Triangle
+internal class LowerTriangle : Triangle
 {
     public LowerTriangle(Grid grid) : base(grid)
     {
@@ -36,7 +36,7 @@ public class LowerTriangle : Triangle
         SetJg(list);
         _values = new double[list.Count];
     }
-    
+
     private void SetJg(List<SortedSet<int>> list)
     {
         _columnPtr = list.SelectMany(x => x).ToArray();

@@ -12,4 +12,8 @@
       <Folder Include="Core\Calculus" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\MathLibrary\MathLibrary.csproj" />
+    </ItemGroup>
+
 </Project>
