@@ -56,6 +56,7 @@ public abstract class Triangle
             if (_columnPtr[i] == columnIndex)
             {
                 _values[i] = value;
+                return;
             }
         }
         throw new ArgumentException("Wrong triangle indexes!");

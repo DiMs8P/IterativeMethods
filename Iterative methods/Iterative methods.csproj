@@ -9,10 +9,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="Core\Calculus" />
-    </ItemGroup>
-
-    <ItemGroup>
       <ProjectReference Include="..\MathLibrary\MathLibrary.csproj" />
     </ItemGroup>
 

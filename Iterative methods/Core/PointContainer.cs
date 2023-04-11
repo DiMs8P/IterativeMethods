@@ -26,6 +26,7 @@ class PointContainer
                 throw new IndexOutOfRangeException("Wrong Index!");
             }
             
+            
             return _points[index];
         }
     }

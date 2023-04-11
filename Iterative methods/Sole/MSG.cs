@@ -8,9 +8,9 @@ public class MSG
     private int _maxIter = 30000;
     private double _relativeDiscrepancy = 0;
     private Vector _globalVector;
-    private SparseMatrix _globalMatrix;
+    private SparseMatrixSymmetrical _globalMatrix;
 
-    public MSG(SparseMatrix globalMatrix, Vector globalVector)
+    public MSG(SparseMatrixSymmetrical globalMatrix, Vector globalVector)
     {
         _globalVector = globalVector;
         _globalMatrix = globalMatrix;
