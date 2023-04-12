@@ -53,8 +53,8 @@ namespace Iterative_methods.Core.Calculus
 
                 MSG msg = new MSG(_globalMatrix.globalMatrix, _globalMatrix.globalVector);
                 Vector qk = new Vector(msg.Solve());
-                _globalMatrix.CalcGlobalMartix_Vector(grid, qk, dt);
-                if (StopCondition(q,_globalMatrix.globalMatrix,_globalMatrix.globalVector))
+                _globalMatrix.CalcGlobalMartix_Vector(grid, q0, dt);
+                if (StopCondition(qk,_globalMatrix.globalMatrix,_globalMatrix.globalVector))
                 {
                     return qk;
                 }
@@ -71,7 +71,14 @@ namespace Iterative_methods.Core.Calculus
             {
                 foreach (var columnValue in A.ColumnValuesByRow(i))
                 {
+                    if (columnValue.ColumnIndex == i)
+                    {
+                        Solution[i] += columnValue.Value * qk[columnValue.ColumnIndex];
+                        continue;
+                    }
+                
                     Solution[i] += columnValue.Value * qk[columnValue.ColumnIndex];
+                    Solution[columnValue.ColumnIndex] += columnValue.Value * qk[i];
                 }
             }
             if (((Solution - b).Lenght() / b.Lenght()) < Config.Eps)

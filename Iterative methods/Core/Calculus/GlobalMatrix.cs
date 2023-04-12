@@ -30,7 +30,9 @@ namespace Iterative_methods.Core.Calculus
 
         public void CalcGlobalMartix_Vector(Grid grid, Vector q, double dt)
         {
-
+            globalVector = new Vector(PointContainer.GetInstance().Size);
+            globalMatrix = new SparseMatrixSymmetrical(grid);
+            
             for (int k = 0; k < grid.Size; k++)
             {
 
