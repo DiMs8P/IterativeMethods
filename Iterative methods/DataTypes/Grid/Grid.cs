@@ -4,6 +4,7 @@ namespace Application.Core.DataTypes;
 
 public class Grid
 {
+    public ReadOnlySpan<Element> Elements => _elements;
     private Element[] _elements;
     public int Size => _elements.Length;
 

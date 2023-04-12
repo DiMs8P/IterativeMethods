@@ -35,15 +35,15 @@ namespace Iterative_methods.Core.Calculus
             {
 
                 double h = points[k + 1].Value - points[k].Value;
-                Matrix A = LocalMatrix.CalcMatrixMass(h, dt) + LocalMatrix.CalcMatrixStiffness(h);
+                Matrix A = LocalMatrix.CalcMatrixMass(h, dt) + LocalMatrix.CalcMatrixStiffness(h, q, grid.Elements[k]);
                 Vector b = new Vector(LocalMatrix.CalcVectorb(h, dt, points[k].Value, points[k+1].Value, q[k], q[k+1]));
                 for (int i = 0; i < 2; i++) 
                 {
                     for(int j = 0; j < 2; j++)
                     {
-                        globalMatrix[k + i, k + j] = A[i, j];
+                        globalMatrix[k + i, k + j] += A[i, j];
                     }
-                    globalVector[k + i] = b[i]; 
+                    globalVector[k + i] += b[i]; 
                 }
             }
         }

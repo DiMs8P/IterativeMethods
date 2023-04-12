@@ -1,10 +1,7 @@
 ﻿using Application;
 using MathLibrary.DataTypes;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
+using Application.Core.DataTypes;
 
 namespace Iterative_methods.Core.Calculus
 {
@@ -22,15 +19,14 @@ namespace Iterative_methods.Core.Calculus
             }
             return M;
         }
-        public static Matrix CalcMatrixStiffness(double h)
+        public static Matrix CalcMatrixStiffness(double h, Vector q, Element elem)
         {
             Matrix G = new Matrix(new double[2, 2]);
-            double lambda1 = 1, lambda2 = 0; //переделать
             for (int i = 0; i < 2; i++)
             {
                 for (int j = 0; j < 2; j++)
                 {
-                    G[i, j] = (lambda1 + lambda2 * ((-1) * ((i + j) % 2))) / (2 * h);
+                    G[i, j] = ((2 * Config.lambda(q[elem.Indexes[0]], q[elem.Indexes[1]], h)) * ((-1) * ((i + j) % 2))) / (2 * h);
                 }
             }
             return G;
@@ -38,8 +34,8 @@ namespace Iterative_methods.Core.Calculus
         public static Vector CalcVectorb(double h, double dt, double x0, double x1, double q0, double q1)
         {
             Vector b = new Vector(2);
-            b[0] = (h / 6) * (2 * Config.fun(x0) + Config.fun(x1)) + (Config.Sigma / (6 * dt)) * (2 * q0 + q1);
-            b[1] = (h / 6) * (Config.fun(x0) + 2 * Config.fun(x1)) + (Config.Sigma / (6 * dt)) * (q0 + 2 * q1);
+            b[0] = (h / 6) * (2 * Config.fun(x0) + Config.fun(x1)) + (Config.Sigma * h / (6 * dt)) * (2 * q0 + q1);
+            b[1] = (h / 6) * (Config.fun(x0) + 2 * Config.fun(x1)) + (Config.Sigma * h / (6 * dt)) * (q0 + 2 * q1);
             return b;
         }
     }

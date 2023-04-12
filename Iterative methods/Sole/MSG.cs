@@ -6,7 +6,7 @@ namespace MathLibrary.Sole;
 public class MSG
 {
     private int _maxIter = 30000;
-    private double _relativeDiscrepancy = 0;
+    private double _relativeDiscrepancy = 1e-10;
     private Vector _globalVector;
     private SparseMatrixSymmetrical _globalMatrix;
 
@@ -59,7 +59,14 @@ public class MSG
         {
             foreach (var columnValue in _globalMatrix.ColumnValuesByRow(i))
             {
-                Solution[i] += columnValue.Value * Solution[columnValue.ColumnIndex];
+                if (columnValue.ColumnIndex == i)
+                {
+                    Solution[i] += columnValue.Value * InitialApproximation[columnValue.ColumnIndex];
+                    continue;
+                }
+                
+                Solution[i] += columnValue.Value * InitialApproximation[columnValue.ColumnIndex];
+                Solution[columnValue.ColumnIndex] += columnValue.Value * InitialApproximation[i];
             }
         }
     }

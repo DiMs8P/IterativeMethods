@@ -54,7 +54,11 @@ public class SparseMatrixSymmetrical
         }
         set
         {
-            if (i < j) (i, j) = (j, i);
+            if (i < j)
+            {
+                (i, j) = (j, i);
+                value = 0;
+            }
             if (i >= 0 && i < _diag.Length)
             {
                 if (i == j)

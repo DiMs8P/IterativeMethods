@@ -30,22 +30,23 @@ namespace Iterative_methods.Core.Calculus
         public Vector[] ProcessTime(Grid grid)
         {
             t = timeParser.Parse();
-            Vector[] qkonch = new Vector[t.Length - 1];
+            Vector[] qkonch = new Vector[t.Length];
+            for (int i = 0; i < qkonch.Length; i++)
+                qkonch[i] = new Vector(PointContainer.GetInstance().Size);
+
             double dt;
             
-            for(int i = 0;i< t.Length-1; i++)
+            for(int i = 1;i< t.Length; i++)
             {
-                dt = t[i+1]- t[i];
-                qkonch[i] = Process(grid, dt);
+                dt = t[i]- t[i - 1];
+                qkonch[i] = Process(grid, dt, qkonch[i-1]);
             }
 
             return qkonch;
         }
 
-        public Vector Process(Grid grid, double dt)
+        public Vector Process(Grid grid, double dt, Vector q0)
         {
-            
-            Vector q0 = new Vector(PointContainer.GetInstance().Size);
             _globalMatrix.CalcGlobalMartix_Vector(grid, q0, dt);
             for (int k = 0; k < 100; k++)
             {
@@ -55,11 +56,12 @@ namespace Iterative_methods.Core.Calculus
                 _globalMatrix.CalcGlobalMartix_Vector(grid, qk, dt);
                 if (StopCondition(q,_globalMatrix.globalMatrix,_globalMatrix.globalVector))
                 {
-                    return q;
+                    return qk;
                 }
 
             }
-            return q;
+
+            throw new Exception("to longlfsg");
         }
 
         bool StopCondition(Vector qk, SparseMatrixSymmetrical A, Vector b)

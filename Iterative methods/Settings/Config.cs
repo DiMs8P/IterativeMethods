@@ -17,12 +17,13 @@ public static class Config
 
     public static double fun(double x)
     {
-        return 2*x+1;
+        return x;
     }
 
-    public static double lambda(double x)
+    public static double lambda(double qLeft, double qRight, double h)
     {
-        return 2 * x + 1;
+        double derr = (qRight - qLeft) / h;
+        return derr * derr;
     }
 
 }
