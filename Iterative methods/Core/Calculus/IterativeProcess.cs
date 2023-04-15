@@ -48,14 +48,14 @@ namespace Iterative_methods.Core.Calculus
         public Vector Process(Grid grid, double dt, Vector q0)
         {
             _globalMatrix.CalcGlobalMartix_Vector(grid, q0, dt);
-            _globalMatrix.globalMatrix = bc1(_globalMatrix.globalMatrix);
+            _globalMatrix = bc1(_globalMatrix);
             for (int k = 0; k < 100; k++)
             {
 
                 MSG msg = new MSG(_globalMatrix.globalMatrix, _globalMatrix.globalVector);
                 Vector qk = new Vector(msg.Solve());
                 _globalMatrix.CalcGlobalMartix_Vector(grid, q0, dt);
-                _globalMatrix.globalMatrix = bc1(_globalMatrix.globalMatrix);
+                _globalMatrix = bc1(_globalMatrix);
                 if (StopCondition(qk,_globalMatrix.globalMatrix,_globalMatrix.globalVector))
                 {
                     return qk;
@@ -88,19 +88,22 @@ namespace Iterative_methods.Core.Calculus
             return false;
         }
 
-        SparseMatrixSymmetrical bc1(SparseMatrixSymmetrical A)
+        GlobalMatrix bc1(GlobalMatrix A)
         {
             for (int i = 0; i < Config.bc1.Length/2; i++)
             {
                 if (Config.bc1[i,0] == Config.From)
                 {
-                    A[0, 0] = 1;
-                    A[1,0] = 0;
+                    A.globalMatrix[0, 0] = 1;
+                    A.globalMatrix[1,0] = 0;
+                    A.globalVector[0] = Config.bc1[i,1];
+
                 }
                 if (Config.bc1[i, 0] == Config.To)
                 {
-                    A[Config.SplitsNumber+1, Config.SplitsNumber + 1] = 1;
-                    A[Config.SplitsNumber + 1, Config.SplitsNumber] = 0;
+                    A.globalMatrix[Config.SplitsNumber+1, Config.SplitsNumber + 1] = 1;
+                    A.globalMatrix[Config.SplitsNumber + 1, Config.SplitsNumber] = 0;
+                    A.globalVector[0] = Config.bc1[i, 1];
                 }
             }
             return A;
