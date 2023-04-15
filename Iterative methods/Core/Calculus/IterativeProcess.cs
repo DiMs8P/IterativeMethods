@@ -48,12 +48,14 @@ namespace Iterative_methods.Core.Calculus
         public Vector Process(Grid grid, double dt, Vector q0)
         {
             _globalMatrix.CalcGlobalMartix_Vector(grid, q0, dt);
+            _globalMatrix.globalMatrix = bc1(_globalMatrix.globalMatrix);
             for (int k = 0; k < 100; k++)
             {
 
                 MSG msg = new MSG(_globalMatrix.globalMatrix, _globalMatrix.globalVector);
                 Vector qk = new Vector(msg.Solve());
                 _globalMatrix.CalcGlobalMartix_Vector(grid, q0, dt);
+                _globalMatrix.globalMatrix = bc1(_globalMatrix.globalMatrix);
                 if (StopCondition(qk,_globalMatrix.globalMatrix,_globalMatrix.globalVector))
                 {
                     return qk;
@@ -84,6 +86,24 @@ namespace Iterative_methods.Core.Calculus
             if (((Solution - b).Lenght() / b.Lenght()) < Config.Eps)
                 return true;
             return false;
+        }
+
+        SparseMatrixSymmetrical bc1(SparseMatrixSymmetrical A)
+        {
+            for (int i = 0; i < Config.bc1.Length/2; i++)
+            {
+                if (Config.bc1[i,0] == Config.From)
+                {
+                    A[0, 0] = 1;
+                    A[1,0] = 0;
+                }
+                if (Config.bc1[i, 0] == Config.To)
+                {
+                    A[Config.SplitsNumber+1, Config.SplitsNumber + 1] = 1;
+                    A[Config.SplitsNumber + 1, Config.SplitsNumber] = 0;
+                }
+            }
+            return A;
         }
     }
 }

@@ -22,13 +22,11 @@ namespace Iterative_methods.Core.Calculus
         public static Matrix CalcMatrixStiffness(double h, Vector q, Element elem)
         {
             Matrix G = new Matrix(new double[2, 2]);
-            for (int i = 0; i < 2; i++)
-            {
-                for (int j = 0; j < 2; j++)
-                {
-                    G[i, j] = ((2 * Config.lambda(q[elem.Indexes[0]], q[elem.Indexes[1]], h)) * ((-1) * ((i + j) % 2))) / (2 * h);
-                }
-            }
+
+            G[0, 0] = ((2 * Config.lambda(q[elem.Indexes[0]], q[elem.Indexes[1]], h))) / (2 * h);
+            G[0, 1] = ((2 * Config.lambda(q[elem.Indexes[0]], q[elem.Indexes[1]], h)) * (-1)) / (2 * h);
+            G[1, 0] = ((2 * Config.lambda(q[elem.Indexes[0]], q[elem.Indexes[1]], h)) * (-1)) / (2 * h);
+            G[1, 1] = ((2 * Config.lambda(q[elem.Indexes[0]], q[elem.Indexes[1]], h))) / (2 * h);
             return G;
         }
         public static Vector CalcVectorb(double h, double dt, double x0, double x1, double q0, double q1)
