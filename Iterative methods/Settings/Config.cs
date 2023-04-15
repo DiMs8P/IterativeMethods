@@ -16,11 +16,17 @@ public static class Config
 
     public static int SplitsNumber = 3;
 
-    public static double fun(double x)
+    public static double fun(double x, double t)
     {
         //return x;
         return 0;
     }
+
+    public static double U(double x)
+    {
+        return 2 * x + 1;
+    }
+
 
     public static double lambda(double qLeft, double qRight, double h)
     {

@@ -29,11 +29,11 @@ namespace Iterative_methods.Core.Calculus
             G[1, 1] = ((2 * Config.lambda(q[elem.Indexes[0]], q[elem.Indexes[1]], h))) / (2 * h);
             return G;
         }
-        public static Vector CalcVectorb(double h, double dt, double x0, double x1, double q0, double q1)
+        public static Vector CalcVectorb(double h, double dt, double x0, double x1, double q0, double q1, double t)
         {
             Vector b = new Vector(2);
-            b[0] = (h / 6) * (2 * Config.fun(x0) + Config.fun(x1)) + (Config.Sigma * h / (6 * dt)) * (2 * q0 + q1);
-            b[1] = (h / 6) * (Config.fun(x0) + 2 * Config.fun(x1)) + (Config.Sigma * h / (6 * dt)) * (q0 + 2 * q1);
+            b[0] = (h / 6) * (2 * Config.fun(x0,t) + Config.fun(x1,t)) + (Config.Sigma * h / (6 * dt)) * (2 * q0 + q1);
+            b[1] = (h / 6) * (Config.fun(x0,t) + 2 * Config.fun(x1,t)) + (Config.Sigma * h / (6 * dt)) * (q0 + 2 * q1);
             return b;
         }
     }

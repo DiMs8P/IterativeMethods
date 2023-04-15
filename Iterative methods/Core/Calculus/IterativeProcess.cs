@@ -33,28 +33,31 @@ namespace Iterative_methods.Core.Calculus
             Vector[] qkonch = new Vector[t.Length];
             for (int i = 0; i < qkonch.Length; i++)
                 qkonch[i] = new Vector(PointContainer.GetInstance().Size);
-
+            for (int i = 0; i < qkonch.Length; i++)
+            {
+                qkonch[0][i] = Config.U(PointContainer.GetInstance()[i].Value);
+            }
             double dt;
             
             for(int i = 1;i< t.Length; i++)
             {
                 dt = t[i]- t[i - 1];
-                qkonch[i] = Process(grid, dt, qkonch[i-1]);
+                qkonch[i] = Process(grid, dt, qkonch[i-1], t[i]);
             }
 
             return qkonch;
         }
 
-        public Vector Process(Grid grid, double dt, Vector q0)
+        public Vector Process(Grid grid, double dt, Vector q0, double t)
         {
-            _globalMatrix.CalcGlobalMartix_Vector(grid, q0, dt);
+            _globalMatrix.CalcGlobalMartix_Vector(grid, q0, dt, t);
             _globalMatrix = bc1(_globalMatrix);
             for (int k = 0; k < 100; k++)
             {
 
                 MSG msg = new MSG(_globalMatrix.globalMatrix, _globalMatrix.globalVector);
                 Vector qk = new Vector(msg.Solve());
-                _globalMatrix.CalcGlobalMartix_Vector(grid, q0, dt);
+                _globalMatrix.CalcGlobalMartix_Vector(grid, q0, dt, t);
                 _globalMatrix = bc1(_globalMatrix);
                 if (StopCondition(qk,_globalMatrix.globalMatrix,_globalMatrix.globalVector))
                 {
@@ -101,9 +104,9 @@ namespace Iterative_methods.Core.Calculus
                 }
                 if (Config.bc1[i, 0] == Config.To)
                 {
-                    A.globalMatrix[Config.SplitsNumber+1, Config.SplitsNumber + 1] = 1;
-                    A.globalMatrix[Config.SplitsNumber + 1, Config.SplitsNumber] = 0;
-                    A.globalVector[0] = Config.bc1[i, 1];
+                    A.globalMatrix[Config.SplitsNumber, Config.SplitsNumber ] = 1;
+                    A.globalMatrix[Config.SplitsNumber, Config.SplitsNumber-1] = 0;
+                    A.globalVector[Config.SplitsNumber] = Config.bc1[i, 1];
                 }
             }
             return A;
