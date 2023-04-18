@@ -11,7 +11,14 @@ public abstract class Triangle
     protected double[] _values = Array.Empty<double>();
 
     protected Triangle(Grid grid) => Initialize(grid);
-    
+
+    public void Clear()
+    {
+        for (int i = 0; i < _values.Length; i++)
+        {
+            _values[i] = 0;
+        }
+    }
     public IEnumerable<ColumnValue> ColumnValuesByRow(int rowIndex)
     {
         if (_rowPtr.Length == 0)
@@ -56,6 +63,7 @@ public abstract class Triangle
             if (_columnPtr[i] == columnIndex)
             {
                 _values[i] = value;
+                return;
             }
         }
         throw new ArgumentException("Wrong triangle indexes!");

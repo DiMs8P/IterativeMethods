@@ -1,5 +1,6 @@
 ﻿using Application.Core.DataTypes;
 using Application.Utils;
+using MathLibrary.DataTypes;
 
 namespace Application.Core;
 class PointContainer

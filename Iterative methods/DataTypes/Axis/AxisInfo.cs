@@ -1,3 +1,5 @@
-﻿namespace Application.Core.DataTypes;
+﻿using MathLibrary.DataTypes;
 
-public readonly record struct AxisInfo(int SplitsNum, bool IsUniformStep = true, NonUniformInfo NonUniformInfo = default);
+namespace Application.Core.DataTypes;
+
+public readonly record struct AxisInfo(Point StartPoint, int SplitsNum, double InitialStep, double StepMultiplier);

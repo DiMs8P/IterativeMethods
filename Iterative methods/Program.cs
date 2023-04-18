@@ -1,9 +1,15 @@
 ﻿using System;
 using Application.Core;
+using Application.Core.Calculus;
+using Application.Core.Calculus.Methods;
 using Application.Core.DataTypes;
 using Application.Core.DataTypes.Matrix;
+using Application.Core.Global;
+using Application.DataTypes;
 using Application.Utils;
+using Application.Utils.Parser;
 using Iterative_methods.DataTypes.Matrix;
+using MathLibrary.DataTypes;
 
 namespace Application
 {
@@ -11,26 +17,26 @@ namespace Application
     {
         static void Main(string[] args)
         {
-            AxisInfo info = new AxisInfo()
-            {
-                SplitsNum = Config.SplitsNumber,
-            };
-            InitialData data = new InitialData
-            {
-                StartPoint = new Point(Config.From),
-                EndPoint = new Point(Config.To),
-                AsisNum = 1,
-                AxisInfo = new []{info}
-            };
-            
-            IParser<Point> pointParser = new PointParser(data);
-            IParser<Element> elementParser = new ElementParser(data);
+            IParser<Point> pointParser = new PointParser(Config.AxisInfo);
+            IParser<Element> elementParser = new ElementParser(Config.AxisInfo);
 
             PointContainer.GetInstance().Initialize(pointParser);
 
+            PointContainer points = PointContainer.GetInstance();
+
             Grid grid = new Grid(elementParser);
 
-            SparseMatrixSymmetrical globalMatrixSymmetrical = new SparseMatrixSymmetrical(grid);
+            MethodData methodData = new MethodData()
+            {
+                Sigma = Config.Sigma,
+                F = Config.F,
+                Lambda = Config.Lambda,
+                U0 = Config.U0
+            };
+
+            MethodHandler handler = new MethodHandler();
+            
+            Vector[] solutions = handler.InvokeSimpleIteration(grid, methodData, Config.TimeInfo);
         }
     }
 }

@@ -6,21 +6,21 @@ namespace Application.Utils;
 
 public class ElementParser : IParser<Element>
 {
-    private InitialData _data;
-    public ElementParser(InitialData data)
+    private AxisInfo[] _data;
+    public ElementParser(params AxisInfo[] data)
     {
         _data = data;
     }
 
     public Element[] Parse()
     {
-        if (_data.AsisNum != 1)
+        if (_data.Length != 1)
         {
             throw new ArgumentException("Max Allowed axes: 1!");
         }
 
 
-        Element[] points = new Element[_data.AxisInfo[0].SplitsNum];
+        Element[] points = new Element[_data[0].SplitsNum];
 
         for (int i = 0; i < points.Length; i++)
         {

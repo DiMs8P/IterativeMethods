@@ -14,4 +14,6 @@ public class Element
         _indexes = indexes;
         _functions = functions;
     }
+    
+    public new int this[int index] => _indexes[index];
 }

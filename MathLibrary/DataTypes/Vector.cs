@@ -18,6 +18,14 @@ public class Vector : IEnumerable<double>
         double lenght = Lenght();
         return new Vector(_values.Select(value => value / lenght).ToArray());
     }
+
+    public void Clear()
+    {
+        for (int i = 0; i < _values.Length; i++)
+        {
+            _values[i] = 0;
+        }
+    }
     
     public double Lenght() =>Math.Sqrt(_values.Aggregate(0.0, (acc, vectorValue) => acc + vectorValue * vectorValue));
 

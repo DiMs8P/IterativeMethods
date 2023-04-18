@@ -16,6 +16,16 @@ public class SparseMatrixSymmetrical
         _diag = new double[PointContainer.GetInstance().Size];
     }
 
+    public void Clear()
+    {
+        for (int i = 0; i < _diag.Length; i++)
+        {
+            _diag[i] = 0;
+        }
+
+        _loverTriangle.Clear();
+    }
+
     public IEnumerable<ColumnValue> ColumnValuesByRow(int rowIndex)
     {
         if (rowIndex >= _diag.Length || rowIndex < 0)
@@ -35,14 +45,15 @@ public class SparseMatrixSymmetrical
     {
         get
         {
-            if (i >= 0 && i >= j && i < _diag.Length)
+            if (i < j) (i, j) = (j, i);
+            if (i >= 0 && i < _diag.Length)
             {
                 if (i == j)
                 {
                     return _diag[i];
                 }
 
-                if (i < j)
+                if (i != j)
                 {
                     return _loverTriangle[i, j];
                 }
@@ -52,19 +63,25 @@ public class SparseMatrixSymmetrical
         }
         set
         {
-            if (i >= 0 && i >= j && i < _diag.Length)
+            if (i < j)
+            {
+                (i, j) = (j, i);
+                value = 0;
+            }
+            if (i >= 0 && i < _diag.Length)
             {
                 if (i == j)
                 {
                     _diag[i] = value;
                 }
 
-                if (i < j)
+                if (i != j)
                 {
                     _loverTriangle[i, j] = value;
                 }
+                return;
             }
-
+            
             throw new ArgumentException("Wrong indexes!");
         }
     }
