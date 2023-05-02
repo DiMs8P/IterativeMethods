@@ -17,6 +17,7 @@ public class GlobalVectorFiller
 
     public void Fill(Vector globalVector, Grid grid, IterationData iterationData, Vector prevQ)
     {
+        globalVector.Clear();
         foreach (Element element in grid.Element())
         {
             iterationData.Element = element;

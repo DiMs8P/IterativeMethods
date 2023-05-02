@@ -6,6 +6,14 @@ namespace Iterative_methods.DataTypes.Matrix;
 
 public class SparseMatrix : SparseMatrixSymmetrical
 {
+    public Triangle U => _upperTriangle;
+    public Triangle L => _loverTriangle;
+    public double[] Diag
+    {
+        get => _diag;
+        set => _diag = value;
+    }
+
     protected Triangle _upperTriangle;
     public SparseMatrix(Grid grid) : base(grid)
     {
@@ -32,7 +40,7 @@ public class SparseMatrix : SparseMatrixSymmetrical
         }
     }
     
-    public new double this[int i, int j]
+    public override double this[int i, int j] 
     {
         get
         {
@@ -45,12 +53,12 @@ public class SparseMatrix : SparseMatrixSymmetrical
 
                 if (i > j)
                 {
-                    return _upperTriangle[i, j];
+                    return _loverTriangle[i, j];
                 }
 
                 if (i < j)
                 {
-                    return _loverTriangle[i, j];
+                    return _upperTriangle[i, j];
                 }
             }
 
@@ -67,13 +75,15 @@ public class SparseMatrix : SparseMatrixSymmetrical
 
                 if (i > j)
                 {
-                    _upperTriangle[i, j] = value;
+                    _loverTriangle[i, j] = value;
                 }
 
                 if (i < j)
                 {
-                    _loverTriangle[i, j] = value;
+                    _upperTriangle[i, j] = value;
                 }
+
+                return;
             }
 
             throw new ArgumentException("Wrong indexes!");

@@ -34,7 +34,7 @@ internal class LowerTriangle : Triangle
     
         SetIg(list);
         SetJg(list);
-        _values = new double[list.Count];
+        _values = new double[list.Count - 1];
     }
 
     private void SetJg(List<SortedSet<int>> list)

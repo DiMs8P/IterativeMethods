@@ -41,7 +41,7 @@ public class SparseMatrixSymmetrical
         yield return new ColumnValue(rowIndex, _diag[rowIndex]);
     }
     
-    public double this[int i, int j]
+    virtual public double this[int i, int j]
     {
         get
         {

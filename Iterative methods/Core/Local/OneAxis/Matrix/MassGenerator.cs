@@ -22,7 +22,7 @@ public class MassGenerator
             for (int j = 0; j < massMatrix.GetLength(1); j++)
             {
                 matrixValue = (i + j) % 2 == 1 ? 1 : 2;
-                massMatrix[i, j] += matrixValue * _data.Sigma * data.CoordStep / (6 / data.TimeStep);
+                massMatrix[i, j] += matrixValue * _data.Sigma * data.CoordStep / (6 * data.TimeStep);
             }
         }
 

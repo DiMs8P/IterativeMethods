@@ -31,12 +31,29 @@ namespace Application
                 Sigma = Config.Sigma,
                 F = Config.F,
                 Lambda = Config.Lambda,
-                U0 = Config.U0
+                U0 = Config.U0,
+                U = Config.U,
+                LambdaDer = Config.LambdaDer,
+                FirstBoundaryConditions = Config.FirstBoundaryConditions
             };
 
             MethodHandler handler = new MethodHandler();
+
+            int[] iterationNum = new int[Config.TimeInfo.TimesNum];
+            Vector[] solutions = handler.InvokeSimpleIteration(grid, methodData, Config.TimeInfo, iterationNum);
             
-            Vector[] solutions = handler.InvokeSimpleIteration(grid, methodData, Config.TimeInfo);
+            using (StreamWriter writer = new StreamWriter("../../../output.txt"))
+            {
+                for (int i = 0; i < solutions.Length; i++)
+                {
+                    writer.WriteLine(iterationNum[i]);
+                    for (int j = 0; j < solutions[i].Size; j++)
+                    {
+                        writer.WriteLine(solutions[i][j]);
+                    }
+                    writer.WriteLine();
+                }
+            }
         }
     }
 }

@@ -18,6 +18,7 @@ public class GlobalMatrixFiller
 
     public void Fill(SparseMatrixSymmetrical outputMatrix, Grid grid, IterationData iterationData)
     {
+        outputMatrix.Clear();
         PointContainer points = PointContainer.GetInstance();
         foreach (Element element in grid.Element())
         {

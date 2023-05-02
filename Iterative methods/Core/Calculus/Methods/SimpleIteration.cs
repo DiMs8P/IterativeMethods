@@ -15,35 +15,37 @@ public class SimpleIteration
     private readonly IParser<double> _timeParser;
     private readonly GlobalMatrixFiller _globalMatrixFiller;
     private readonly GlobalVectorFiller _globalVectorFiller;
+    private readonly MethodData _methodData;
 
     public SimpleIteration(IParser<double> timeParser, GlobalMatrixFiller globalMatrixFiller,
-        GlobalVectorFiller globalVectorFiller)
+        GlobalVectorFiller globalVectorFiller, MethodData data)
     {
+        _methodData = data;
         _timeParser = timeParser;
         _globalMatrixFiller = globalMatrixFiller;
         _globalVectorFiller = globalVectorFiller;
     }
 
-    public Vector[] Solve(Grid grid, Vector q0)
+    public Vector[] Solve(Grid grid, Vector q0, int[] iterationNum)
     {
-        double[] times = _timeParser.Parse();
 
-        Vector[] solutions = new Vector[times.Length];
-        solutions[0] = q0;
+            double[] times = _timeParser.Parse();
 
-        IterationData iterationData = new IterationData();
+            Vector[] solutions = new Vector[times.Length];
+            solutions[0] = q0;
 
-        for (int i = 1; i < times.Length; i++)
-        {
-            iterationData.TimeStep = times[i] - times[i - 1];
-            iterationData.Time = times[i];
-            solutions[i] = SolveAtTime(grid, solutions[i - 1], iterationData);
-        }
+            IterationData iterationData = new IterationData();
 
-        return solutions;
+            for (int i = 1; i < times.Length; i++)
+            {
+                iterationData.TimeStep = times[i] - times[i - 1];
+                iterationData.Time = times[i];
+                solutions[i] = SolveAtTime(grid, solutions[i - 1], iterationData, i, iterationNum);
+            }
+            return solutions;
     }
 
-    private Vector SolveAtTime(Grid grid, Vector prevQ, IterationData iterationData)
+    private Vector SolveAtTime(Grid grid, Vector prevQ, IterationData iterationData, int timesNum, int[] iterationNum)
     {
         SparseMatrixSymmetrical globalMatrix = new SparseMatrixSymmetrical(grid);
         Vector globalVector = new Vector(prevQ.Size);
@@ -54,12 +56,13 @@ public class SimpleIteration
             iterationData.Solution = solution;
             _globalMatrixFiller.Fill(globalMatrix, grid, iterationData);
             _globalVectorFiller.Fill(globalVector, grid, iterationData, prevQ);
-            ApplyFirstCondition(globalMatrix, globalVector, solution);
+            ApplyFirstCondition(globalMatrix, globalVector, solution, iterationData);
             MSG msg = new MSG(globalMatrix, globalVector);
             solution = new Vector(msg.Solve());
 
             if (ExitCondition(solution, globalMatrix, globalVector))
             {
+                iterationNum[timesNum] = i + 1;
                 return solution;
             }
         }
@@ -67,17 +70,19 @@ public class SimpleIteration
         throw new TimeoutException("Too long");
     }
 
-    private void ApplyFirstCondition(SparseMatrixSymmetrical globalMatrix, Vector globalVector, Vector solution)
+    private void ApplyFirstCondition(SparseMatrixSymmetrical globalMatrix, Vector globalVector, Vector solution, IterationData data)
     {
-        globalVector[1] = globalVector[1] - globalMatrix[1, 0] * solution[0];
-        globalVector[globalVector.Size - 2] = globalVector[globalVector.Size - 2] - globalMatrix[globalVector.Size - 1, globalVector.Size - 2] * solution[globalVector.Size - 1];
+        globalVector[1] = globalVector[1] - globalMatrix[1, 0] * _methodData.U(_methodData.FirstBoundaryConditions[0].Point[0], data.Time);
+        globalVector[globalVector.Size - 2] = globalVector[globalVector.Size - 2] -
+                                              globalMatrix[globalVector.Size - 1, globalVector.Size - 2] *
+                                              _methodData.U(_methodData.FirstBoundaryConditions[1].Point[0], data.Time);
         globalMatrix[0, 0] = 1;
         globalMatrix[1, 0] = 0;
-        globalVector[0] = 1;
+        globalVector[0] = _methodData.U(_methodData.FirstBoundaryConditions[0].Point[0], data.Time);
 
         globalMatrix[globalVector.Size - 1, globalVector.Size - 1] = 1;
         globalMatrix[globalVector.Size - 1, globalVector.Size - 2] = 0;
-        globalVector[globalVector.Size - 1] = 3;
+        globalVector[globalVector.Size - 1] = _methodData.U(_methodData.FirstBoundaryConditions[1].Point[0], data.Time);
     }
 
     private bool ExitCondition(Vector solution, SparseMatrixSymmetrical sparseMatrixSymmetrical, Vector globalVector)
