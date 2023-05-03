@@ -30,12 +30,13 @@ public class Newton
         _newtonHelper = newtonHelper;
     }
 
-    public Vector[] Solve(Grid grid, Vector q0, int[] iterationNum)
+    public Vector[] Solve(Grid grid, Vector q0, int[] iterationNum, double[] timeNum)
     {
         double[] times = _timeParser.Parse();
 
         Vector[] solutions = new Vector[times.Length];
         solutions[0] = q0;
+        timeNum[0] = times[0];
 
         IterationData iterationData = new IterationData();
 
@@ -43,6 +44,7 @@ public class Newton
         {
             iterationData.TimeStep = times[i] - times[i - 1];
             iterationData.Time = times[i];
+            timeNum[i] = times[i];
             solutions[i] = SolveAtTime(grid, solutions[i - 1], iterationData, i, iterationNum);
         }
 
@@ -58,9 +60,10 @@ public class Newton
         Vector globalVectorLinearized = new Vector(prevQ.Size);
         
         Vector solution = new Vector(prevQ);
-        iterationData.Solution = solution;
         for (int i = 0; i < _maxIterations; i++)
         {
+            iterationData.Solution = solution;
+
             _newtonHelper.Linearize(globalMatrixLinearized, globalVectorLinearized, solution, grid, iterationData);
             _newtonHelper.ApplyFirstCondition(globalMatrixLinearized, globalVectorLinearized, iterationData);
             
@@ -68,11 +71,10 @@ public class Newton
             solution = new Vector(Gauss.Calc(globalMatrixLinearized, globalVectorLinearized));
 
             //ApplyRelaxation(solution, iterationData.Solution);
-            iterationData.Solution = solution;
             _globalMatrixFiller.Fill(globalMatrix, grid, iterationData);
             _globalVectorFiller.Fill(globalVector, grid, iterationData, prevQ);
             ApplyFirstCondition(globalMatrix, globalVector, solution, iterationData);
-            if (ExitCondition(solution, globalMatrix, globalVector))
+            if (ExitCondition(iterationData.Solution, globalMatrix, globalVector))
             {
                 iterationNums[iterationNum] = i + 1;
                 return solution;

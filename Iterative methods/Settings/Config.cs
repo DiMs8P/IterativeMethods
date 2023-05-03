@@ -26,13 +26,13 @@ public static class Config
     
     public static double Sigma = 1.0;
 
-    public static Func<double, double> U0 = x => 2*x;
+    public static Func<double, double> U0 = x => x;
     
-    public static Func<double, double, double> U = (x,t) => 2*x*x + t*t*t;
+    public static Func<double, double, double> U = (x,t) => x;
     
-    public static Func<Point, double, double> F = (x, t) => 3*t*t;
+    public static Func<Point, double, double> F = (x, t) => x[0];
 
-    public static Func<Element, Vector, double, double> Lambda = (elem, q,  step) =>
+    public static Func<Element, Vector, double, double> Lambda = (elem, q, step) =>
     {
         double derr = (q[elem[1]] - q[elem[0]]) / step;
         return 1;

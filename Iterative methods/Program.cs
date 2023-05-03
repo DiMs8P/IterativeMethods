@@ -40,12 +40,16 @@ namespace Application
             MethodHandler handler = new MethodHandler();
 
             int[] iterationNum = new int[Config.TimeInfo.TimesNum];
-            Vector[] solutions = handler.InvokeSimpleIteration(grid, methodData, Config.TimeInfo, iterationNum);
+            double[] timeNum = new double[Config.TimeInfo.TimesNum];
+            Vector[] solutions = handler.InvokeSimpleIteration(grid, methodData, Config.TimeInfo, iterationNum, timeNum);
             
             using (StreamWriter writer = new StreamWriter("../../../output.txt"))
             {
                 for (int i = 0; i < solutions.Length; i++)
                 {
+                    writer.Write("time = ");
+                    writer.WriteLine(timeNum[i]);
+                    writer.Write("Количество итераций в методе = ");
                     writer.WriteLine(iterationNum[i]);
                     for (int j = 0; j < solutions[i].Size; j++)
                     {

@@ -5,8 +5,8 @@ namespace Application.Core.Sole;
 
 public class MSG
 {
-    private int _maxIter = 30000;
-    private double _relativeDiscrepancy = 1e-10;
+    private int _maxIter = 3000000;
+    private double _relativeDiscrepancy = 1e-16;
     private Vector _globalVector;
     private SparseMatrixSymmetrical _globalMatrix;
 

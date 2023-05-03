@@ -10,8 +10,8 @@ namespace Application.Core.Calculus.Methods;
 
 public class SimpleIteration
 {
-    private readonly double _eps = 1e-10;
-    private readonly int _maxIterations = 100;
+    private readonly double _eps = 1e-14;
+    private readonly int _maxIterations = 1000000;
     private readonly IParser<double> _timeParser;
     private readonly GlobalMatrixFiller _globalMatrixFiller;
     private readonly GlobalVectorFiller _globalVectorFiller;
@@ -26,19 +26,20 @@ public class SimpleIteration
         _globalVectorFiller = globalVectorFiller;
     }
 
-    public Vector[] Solve(Grid grid, Vector q0, int[] iterationNum)
+    public Vector[] Solve(Grid grid, Vector q0, int[] iterationNum, double[] timeNum)
     {
-
             double[] times = _timeParser.Parse();
 
             Vector[] solutions = new Vector[times.Length];
             solutions[0] = q0;
+            timeNum[0] = times[0];
 
             IterationData iterationData = new IterationData();
 
             for (int i = 1; i < times.Length; i++)
             {
                 iterationData.TimeStep = times[i] - times[i - 1];
+                timeNum[i] = times[i];
                 iterationData.Time = times[i];
                 solutions[i] = SolveAtTime(grid, solutions[i - 1], iterationData, i, iterationNum);
             }
@@ -49,18 +50,20 @@ public class SimpleIteration
     {
         SparseMatrixSymmetrical globalMatrix = new SparseMatrixSymmetrical(grid);
         Vector globalVector = new Vector(prevQ.Size);
-
+        Vector ChachedGlobalVector;
         Vector solution = new Vector(prevQ);
         for (int i = 0; i < _maxIterations; i++)
         {
             iterationData.Solution = solution;
             _globalMatrixFiller.Fill(globalMatrix, grid, iterationData);
             _globalVectorFiller.Fill(globalVector, grid, iterationData, prevQ);
-            ApplyFirstCondition(globalMatrix, globalVector, solution, iterationData);
+            ChachedGlobalVector = new Vector(globalVector);
+            
+            ApplyFirstCondition(globalMatrix, globalVector, iterationData);
             MSG msg = new MSG(globalMatrix, globalVector);
             solution = new Vector(msg.Solve());
 
-            if (ExitCondition(solution, globalMatrix, globalVector))
+            if (ExitCondition(iterationData.Solution, globalMatrix, ChachedGlobalVector))
             {
                 iterationNum[timesNum] = i + 1;
                 return solution;
@@ -70,7 +73,7 @@ public class SimpleIteration
         throw new TimeoutException("Too long");
     }
 
-    private void ApplyFirstCondition(SparseMatrixSymmetrical globalMatrix, Vector globalVector, Vector solution, IterationData data)
+    private void ApplyFirstCondition(SparseMatrixSymmetrical globalMatrix, Vector globalVector, IterationData data)
     {
         globalVector[1] = globalVector[1] - globalMatrix[1, 0] * _methodData.U(_methodData.FirstBoundaryConditions[0].Point[0], data.Time);
         globalVector[globalVector.Size - 2] = globalVector[globalVector.Size - 2] -
@@ -103,7 +106,8 @@ public class SimpleIteration
             }
         }
 
-        if (((Solution - globalVector).Lenght() / globalVector.Lenght()) < _eps)
+        double value = ((Solution - globalVector).Lenght() / globalVector.Lenght());
+        if (value < _eps)
             return true;
         return false;
     }

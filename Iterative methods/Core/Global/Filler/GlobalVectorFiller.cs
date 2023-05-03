@@ -18,9 +18,11 @@ public class GlobalVectorFiller
     public void Fill(Vector globalVector, Grid grid, IterationData iterationData, Vector prevQ)
     {
         globalVector.Clear();
+        PointContainer points = PointContainer.GetInstance();
         foreach (Element element in grid.Element())
         {
             iterationData.Element = element;
+            iterationData.CoordStep = points[element[1]][0] - points[element[0]][0];
             Vector localVector = _vectorGenerator.Generate(prevQ, iterationData);
 
             Insert(globalVector, localVector, iterationData);

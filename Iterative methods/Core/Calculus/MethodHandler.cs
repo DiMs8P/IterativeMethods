@@ -11,7 +11,7 @@ namespace Application.Core.Calculus;
 
 public class MethodHandler
 {
-    public Vector[] InvokeSimpleIteration(Grid grid, MethodData methodData, TimeInfo info, int[] iterationNum)
+    public Vector[] InvokeSimpleIteration(Grid grid, MethodData methodData, TimeInfo info, int[] iterationNum, double[] timeNum)
     {
         GlobalMatrixFiller matrixFiller = new GlobalMatrixFiller(methodData);
         GlobalVectorFiller vectorFiller = new GlobalVectorFiller(methodData);
@@ -26,10 +26,10 @@ public class MethodHandler
         
         SimpleIteration iteration = new SimpleIteration(new TimeParser(info), matrixFiller, vectorFiller, methodData);
 
-        return iteration.Solve(grid, initialSolution, iterationNum);
+        return iteration.Solve(grid, initialSolution, iterationNum, timeNum);
     }
     
-    public Vector[] InvokeNewton(Grid grid, MethodData methodData, TimeInfo info, int[] iterationNum)
+    public Vector[] InvokeNewton(Grid grid, MethodData methodData, TimeInfo info, int[] iterationNum, double[] timeNum)
     {
         GlobalMatrixFiller matrixFiller = new GlobalMatrixFiller(methodData);
         GlobalVectorFiller vectorFiller = new GlobalVectorFiller(methodData);
@@ -46,6 +46,6 @@ public class MethodHandler
         
         Newton newton = new Newton(new TimeParser(info), matrixFiller, vectorFiller, linearizer, methodData);
 
-        return newton.Solve(grid, initialSolution, iterationNum);
+        return newton.Solve(grid, initialSolution, iterationNum, timeNum);
     }
 }
