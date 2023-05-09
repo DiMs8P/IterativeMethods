@@ -19,14 +19,20 @@ public class SparseMatrix : SparseMatrixSymmetrical
     {
         _upperTriangle = new UpperTriangle(grid);
     }
-    
+
+    public override void Clear()
+    {
+        base.Clear();
+        _upperTriangle.Clear();
+    }
+
     public new IEnumerable<ColumnValue> ColumnValuesByRow(int rowIndex)
     {
         if (rowIndex >= _diag.Length || rowIndex < 0)
         {
             throw new ArgumentException("Out of bounds row index!");
         }
-        
+
         foreach (var indexValue in _loverTriangle.ColumnValuesByRow(rowIndex))
         {
             yield return indexValue;
@@ -39,8 +45,8 @@ public class SparseMatrix : SparseMatrixSymmetrical
             yield return indexValue;
         }
     }
-    
-    public override double this[int i, int j] 
+
+    public override double this[int i, int j]
     {
         get
         {

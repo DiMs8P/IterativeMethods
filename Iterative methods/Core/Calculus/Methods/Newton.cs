@@ -10,12 +10,12 @@ namespace Application.Core.Calculus.Methods;
 
 public class Newton
 {
-        private readonly double _eps = 1e-10;
-    private readonly int _maxIterations = 100;
+    private readonly double _eps = 1e-14;
+    private readonly int _maxIterations = 1000000;
     private readonly IParser<double> _timeParser;
     private readonly GlobalMatrixFiller _globalMatrixFiller;
     private readonly GlobalVectorFiller _globalVectorFiller;
-    
+
     private readonly NewtonHelper _newtonHelper;
     private readonly MethodData _methodData;
 
@@ -55,33 +55,38 @@ public class Newton
     {
         SparseMatrixSymmetrical globalMatrix = new SparseMatrixSymmetrical(grid);
         Vector globalVector = new Vector(prevQ.Size);
-        
+
         SparseMatrix globalMatrixLinearized = new SparseMatrix(grid);
         Vector globalVectorLinearized = new Vector(prevQ.Size);
-        
+
         Vector solution = new Vector(prevQ);
+        IterationData chachedData = new IterationData();
+        chachedData.TimeStep = iterationData.TimeStep;
+        chachedData.Time = iterationData.Time;
+        chachedData.CoordStep = iterationData.CoordStep;
+        chachedData.Solution = prevQ;
+        iterationData.Solution = prevQ;
         for (int i = 0; i < _maxIterations; i++)
         {
-            iterationData.Solution = solution;
-
             _newtonHelper.Linearize(globalMatrixLinearized, globalVectorLinearized, solution, grid, iterationData);
             _newtonHelper.ApplyFirstCondition(globalMatrixLinearized, globalVectorLinearized, iterationData);
-            
+
             // Change solver!!!
             solution = new Vector(Gauss.Calc(globalMatrixLinearized, globalVectorLinearized));
-
+            iterationData.Solution = solution;
             //ApplyRelaxation(solution, iterationData.Solution);
             _globalMatrixFiller.Fill(globalMatrix, grid, iterationData);
             _globalVectorFiller.Fill(globalVector, grid, iterationData, prevQ);
-            ApplyFirstCondition(globalMatrix, globalVector, solution, iterationData);
-            if (ExitCondition(iterationData.Solution, globalMatrix, globalVector))
+            ApplyFirstCondition(globalMatrix, globalVector, iterationData);
+            if (ExitCondition(solution, globalMatrix, globalVector))
             {
                 iterationNums[iterationNum] = i + 1;
                 return solution;
             }
+            chachedData.Solution = solution;
         }
 
-        //throw new TimeoutException("Too long");
+        throw new TimeoutException("Too long");
         return solution;
     }
 
@@ -90,7 +95,7 @@ public class Newton
     //     solution = Config.Relaxation * solution + (1 - Config.Relaxation) * iterationDataSolution;
     // }
 
-    private void ApplyFirstCondition(SparseMatrixSymmetrical globalMatrix, Vector globalVector, Vector solution, IterationData data)
+    private void ApplyFirstCondition(SparseMatrixSymmetrical globalMatrix, Vector globalVector, IterationData data)
     {
         globalVector[1] = globalVector[1] - globalMatrix[1, 0] * _methodData.U(_methodData.FirstBoundaryConditions[0].Point[0], data.Time);
         globalVector[globalVector.Size - 2] = globalVector[globalVector.Size - 2] -
@@ -123,7 +128,8 @@ public class Newton
             }
         }
 
-        if (((Solution - globalVector).Lenght() / globalVector.Lenght()) < _eps)
+        double value = ((Solution - globalVector).Lenght() / globalVector.Lenght());
+        if (value < _eps)
             return true;
         return false;
     }

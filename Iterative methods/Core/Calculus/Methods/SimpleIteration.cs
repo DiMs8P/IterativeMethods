@@ -28,42 +28,40 @@ public class SimpleIteration
 
     public Vector[] Solve(Grid grid, Vector q0, int[] iterationNum, double[] timeNum)
     {
-            double[] times = _timeParser.Parse();
+        double[] times = _timeParser.Parse();
 
-            Vector[] solutions = new Vector[times.Length];
-            solutions[0] = q0;
-            timeNum[0] = times[0];
+        Vector[] solutions = new Vector[times.Length];
+        solutions[0] = q0;
+        timeNum[0] = times[0];
 
-            IterationData iterationData = new IterationData();
+        IterationData iterationData = new IterationData();
 
-            for (int i = 1; i < times.Length; i++)
-            {
-                iterationData.TimeStep = times[i] - times[i - 1];
-                timeNum[i] = times[i];
-                iterationData.Time = times[i];
-                solutions[i] = SolveAtTime(grid, solutions[i - 1], iterationData, i, iterationNum);
-            }
-            return solutions;
+        for (int i = 1; i < times.Length; i++)
+        {
+            iterationData.TimeStep = times[i] - times[i - 1];
+            timeNum[i] = times[i];
+            iterationData.Time = times[i];
+            solutions[i] = SolveAtTime(grid, solutions[i - 1], iterationData, i, iterationNum);
+        }
+        return solutions;
     }
 
     private Vector SolveAtTime(Grid grid, Vector prevQ, IterationData iterationData, int timesNum, int[] iterationNum)
     {
         SparseMatrixSymmetrical globalMatrix = new SparseMatrixSymmetrical(grid);
         Vector globalVector = new Vector(prevQ.Size);
-        Vector ChachedGlobalVector;
         Vector solution = new Vector(prevQ);
         for (int i = 0; i < _maxIterations; i++)
         {
             iterationData.Solution = solution;
             _globalMatrixFiller.Fill(globalMatrix, grid, iterationData);
             _globalVectorFiller.Fill(globalVector, grid, iterationData, prevQ);
-            ChachedGlobalVector = new Vector(globalVector);
-            
+
             ApplyFirstCondition(globalMatrix, globalVector, iterationData);
             MSG msg = new MSG(globalMatrix, globalVector);
             solution = new Vector(msg.Solve());
 
-            if (ExitCondition(iterationData.Solution, globalMatrix, ChachedGlobalVector))
+            if (ExitCondition(iterationData.Solution, globalMatrix, globalVector))
             {
                 iterationNum[timesNum] = i + 1;
                 return solution;

@@ -16,7 +16,7 @@ public class SparseMatrixSymmetrical
         _diag = new double[PointContainer.GetInstance().Size];
     }
 
-    public void Clear()
+    virtual public void Clear()
     {
         for (int i = 0; i < _diag.Length; i++)
         {
@@ -32,7 +32,7 @@ public class SparseMatrixSymmetrical
         {
             throw new ArgumentException("Out of bounds row index!");
         }
-        
+
         foreach (var indexValue in _loverTriangle.ColumnValuesByRow(rowIndex))
         {
             yield return indexValue;
@@ -40,7 +40,7 @@ public class SparseMatrixSymmetrical
 
         yield return new ColumnValue(rowIndex, _diag[rowIndex]);
     }
-    
+
     virtual public double this[int i, int j]
     {
         get
@@ -81,7 +81,7 @@ public class SparseMatrixSymmetrical
                 }
                 return;
             }
-            
+
             throw new ArgumentException("Wrong indexes!");
         }
     }
