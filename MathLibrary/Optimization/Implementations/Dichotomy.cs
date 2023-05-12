@@ -4,7 +4,7 @@ using MathLibrary.Optimization;
 
 namespace MathLibrary;
 
-internal class Dichotomy : IExtremumFinder
+public class Dichotomy : IExtremumFinder
 {
     public Point FindMinimum(Func<Point, double> func, Interval interval, in double errorTolerance = 1e-04)
     {

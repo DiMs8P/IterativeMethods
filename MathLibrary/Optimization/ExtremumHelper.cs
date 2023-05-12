@@ -9,7 +9,7 @@ public class ExtremumHelper
     private readonly IExtremumFinder _extremumFinder;
     public ExtremumHelper(IExtremumFinder? extremumFinder = null, IIntervalFinder? intervalFinder = null)
     {
-        _intervalFinder = intervalFinder ?? new IntervalSearch(1);
+        _intervalFinder = intervalFinder ?? new IntervalSearch(0.1);
         _extremumFinder = extremumFinder ?? new Dichotomy();
     }
     public Point FindMinimumPoint(Func<Point, double> func, Point startPoint, Vector direction, double errorTolerance)
