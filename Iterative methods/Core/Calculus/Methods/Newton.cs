@@ -11,7 +11,7 @@ namespace Application.Core.Calculus.Methods;
 public class Newton
 {
     private readonly double _eps = 1e-14;
-    private readonly int _maxIterations = 1000000;
+    private readonly int _maxIterations = 500;
     private readonly IParser<double> _timeParser;
     private readonly GlobalMatrixFiller _globalMatrixFiller;
     private readonly GlobalVectorFiller _globalVectorFiller;
@@ -68,17 +68,17 @@ public class Newton
         iterationData.Solution = prevQ;
         for (int i = 0; i < _maxIterations; i++)
         {
-            _newtonHelper.Linearize(globalMatrixLinearized, globalVectorLinearized, solution, grid, iterationData);
+            _newtonHelper.Linearize(globalMatrixLinearized, globalVectorLinearized, prevQ, grid, iterationData);
             _newtonHelper.ApplyFirstCondition(globalMatrixLinearized, globalVectorLinearized, iterationData);
 
             // Change solver!!!
             solution = new Vector(Gauss.Calc(globalMatrixLinearized, globalVectorLinearized));
             iterationData.Solution = solution;
-            //ApplyRelaxation(solution, iterationData.Solution);
+            ApplyRelaxation(solution, iterationData.Solution);
             _globalMatrixFiller.Fill(globalMatrix, grid, iterationData);
             _globalVectorFiller.Fill(globalVector, grid, iterationData, prevQ);
             ApplyFirstCondition(globalMatrix, globalVector, iterationData);
-            if (ExitCondition(solution, globalMatrix, globalVector))
+            if (ExitCondition(chachedData.Solution, globalMatrix, globalVector))
             {
                 iterationNums[iterationNum] = i + 1;
                 return solution;
@@ -86,14 +86,13 @@ public class Newton
             chachedData.Solution = solution;
         }
 
-        throw new TimeoutException("Too long");
         return solution;
     }
 
-    // private void ApplyRelaxation(Vector solution, Vector iterationDataSolution)
-    // {
-    //     solution = Config.Relaxation * solution + (1 - Config.Relaxation) * iterationDataSolution;
-    // }
+    private void ApplyRelaxation(Vector solution, Vector iterationDataSolution)
+    {
+        solution = Config.Relaxation * solution + (1 - Config.Relaxation) * iterationDataSolution;
+    }
 
     private void ApplyFirstCondition(SparseMatrixSymmetrical globalMatrix, Vector globalVector, IterationData data)
     {

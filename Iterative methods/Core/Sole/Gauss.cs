@@ -14,7 +14,8 @@ public static class Gauss
         int[] indexes = matrix.GetIndexes();
         double relativeDiscrepancy = CalRelativeDiscrepancy(matrix, globalCopy, initialApproximation);
 
-        for (int i = 0; i < 30000 && relativeDiscrepancy > 1.0E-16; ++i){
+        int i = 0;
+        for (i = 0; i < 30000 && relativeDiscrepancy > 1.0E-15; ++i){
             Iterate(matrix, globalCopy, initialApproximation, indexes);
 
             relativeDiscrepancy = CalRelativeDiscrepancy(matrix, globalCopy, initialApproximation);

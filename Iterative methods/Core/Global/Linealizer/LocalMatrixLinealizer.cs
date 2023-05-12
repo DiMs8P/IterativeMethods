@@ -13,7 +13,7 @@ public class LocalMatrixLinealizer
         _methodData = methodData;
     }
 
-    public void Linealize(Matrix localMatrix, Element element, Vector prevSolution, IterationData iterationData)
+    public void Linealize(Matrix localMatrix, Element element, IterationData iterationData)
     {
         for (int i = 0; i < localMatrix.GetLength(0); i++)
         {
@@ -22,8 +22,8 @@ public class LocalMatrixLinealizer
                 double result = 0;
                 for (int r = 0; r < localMatrix.GetLength(1); r++)
                 {
-                    result += BasicIntegral(element[i], element[r], iterationData) * UbyQ(element[r], element[j]) *
-                              _methodData.LambdaDer(element, prevSolution, r) * prevSolution[element[r]];
+                    result += 2 * BasicIntegral(element[i], element[r], iterationData) * UbyQ(j, iterationData) *
+                              _methodData.LambdaDer(element, iterationData.Solution, r) * iterationData.Solution[element[r]];
                 }
                 
                 localMatrix[i, j] += result;
@@ -37,8 +37,9 @@ public class LocalMatrixLinealizer
         return sign * 1 / (2 * iterationData.CoordStep);
     }
 
-    private double UbyQ(int l, int j)
+    private double UbyQ(int j, IterationData iterationData)
     {
-        return j == l ? 1 : 0;
+        int sign = j == 0 ? -1 : 1;
+        return sign / iterationData.CoordStep;
     }
 }

@@ -45,8 +45,8 @@ public class NewtonHelper
             Matrix localMatrix = _stiffnessGenerator.Generate(iterationData) + _massGenerator.Generate(iterationData);
             Vector localVector = _vectorGenerator.Generate(prevSolution, iterationData);
 
-            _vectorLinealizer.Linealize(localVector, element, prevSolution, iterationData);
-            _matrixLinealizer.Linealize(localMatrix, element, prevSolution, iterationData);
+            _vectorLinealizer.Linealize(localVector, element, iterationData);
+            _matrixLinealizer.Linealize(localMatrix, element, iterationData);
 
             Insert(globalMatrix, globalVector, localMatrix, localVector, iterationData);
         }

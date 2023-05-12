@@ -41,7 +41,7 @@ namespace Application
 
             int[] iterationNum = new int[Config.TimeInfo.TimesNum];
             double[] timeNum = new double[Config.TimeInfo.TimesNum];
-            Vector[] solutions = handler.InvokeSimpleIteration(grid, methodData, Config.TimeInfo, iterationNum, timeNum);
+            Vector[] solutions = handler.InvokeNewton(grid, methodData, Config.TimeInfo, iterationNum, timeNum);
 
             using (StreamWriter writer = new StreamWriter("../../../output.txt"))
             {

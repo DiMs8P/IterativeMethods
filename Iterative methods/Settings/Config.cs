@@ -46,25 +46,25 @@ public static class Config
 
 
 
-    /*   public static double Sigma = 1.0;
-
-       public static Func<double, double> U0 = x => x;
-
-       public static Func<double, double, double> U = (x, t) => x + t;
-
-       public static Func<Point, double, double> F = (x, t) => x[0] + 1;
-
-       public static Func<Element, Vector, double, double> Lambda = (elem, q, step) =>
-       {
-           double derr = (q[elem[1]] - q[elem[0]]) / step;
-           return derr + 1;
-       };
-
-       public static Func<Element, Vector, int, double> LambdaDer = (elem, q, j) =>
-       {
-           //return q[j];
-           return 1;
-       };*/
+        // public static double Sigma = 1.0;
+        //
+        // public static Func<double, double> U0 = x => x;
+        //
+        // public static Func<double, double, double> U = (x, t) => x + t;
+        //
+        // public static Func<Point, double, double> F = (x, t) => x[0] + 1;
+        //
+        // public static Func<Element, Vector, double, double> Lambda = (elem, q, step) =>
+        // {
+        //     double derr = (q[elem[1]] - q[elem[0]]) / step;
+        //     return derr + 1;
+        // };
+        //
+        // public static Func<Element, Vector, int, double> LambdaDer = (elem, q, j) =>
+        // {
+        //     //return q[j];
+        //     return 1;
+        // };
 
 
 
@@ -74,5 +74,5 @@ public static class Config
         new FirstBoundaryCondition(new Point(1), 534535453),
     };
 
-    //public static double Relaxation = 1.5d;
+    public static double Relaxation = 1.5d;
 }
